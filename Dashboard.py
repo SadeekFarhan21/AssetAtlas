@@ -15,6 +15,7 @@ import openai
 # API Key
 
 openai.api_key = "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"
+
 # Create the container
 title = st.container()
 sidebar = st.container()
@@ -74,7 +75,7 @@ with about:
         max_tokens=1000, 
     )
     output = str(output['choices'][0]['text'])
-    # st.write(dictionary[ticker])
+    st.write(dictionary[ticker])
     st.write(output)
     
      
