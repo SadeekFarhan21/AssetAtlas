@@ -2,21 +2,15 @@ import streamlit as st
 import yfinance as yf
 import pandas as pd
 import plotly.express as px
-
 import numpy as np
 from datetime import datetime, timedelta, date
-from dateutil.relativedelta import relativedelta
-from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.tree import DecisionTreeRegressor
+from dateutil.relativedelta import relativedelta;
+from sklearn.model_selection import train_test_split;
+from sklearn.ensemble import RandomForestRegressor;
 import google.generativeai as palm
-import os
 
 st.set_page_config(layout="wide")
-# API Key
-#api_key = ""open('api_key.text', "r").open()
-#print(api_key)
-# palm.configure(api_key=os.environ['AIzaSyD0iZyV-oHHpunhhTQNqJAjY5fxBfIkjSQ'])
+palm.configure(api_key="AIzaSyBNa8uKXspRDH56UNEwPeIje-jOAW742Ig")
 
 # Create the container
 title = st.container()
@@ -58,7 +52,7 @@ with sidebar:
         ticker = st.sidebar.selectbox('Enter Ticker', nasdaq)
     start = st.sidebar.date_input('Enter Start Date', date.today() - timedelta(days=100))
     end = st.sidebar.date_input('Enter End Date', date.today())
-    future_days = st.sidebar.slider('Enter Future Days', 20, 100) 
+    future_days = st.sidebar.slider('Enter Future Days', 30, 100) 
 
 # Dataset
 df = yf.download(ticker, start=start, end=end)
@@ -66,18 +60,9 @@ df = df[::-1]
 
 with about:
     st.header(dictionary[ticker])
-    #text = 'Write a brief explanation of the history and purpose of' + dictionary[ticker] + '.'
-    
-    
-    #output = openai.Completion.create(
-    #    prompt=text, 
-    #    model='text-davinci-003',
-    #    max_tokens=1000, 
-    #)
-    #output = str(output['choices'][0]['text'])
-    #st.write(dictionary[ticker])
-    #st.write(output)
-    #
+    text = "Compose a concise description within approximately 100 words that provides an accurate account of " + dictionary[ticker] +" history, purpose, current status, and future prospects. Bold the year of establishment and the headquarters location. Carefully review punctuation. Enlarge and emphasize the title before submitting it to me."
+    response = palm.generate_text(prompt=text)
+    st.write(response.result)
      
 # Volume
 with volume:
@@ -150,8 +135,7 @@ with change:
         X = np.array(data.drop(columns=['Prediction'], axis=1))[:-future_days]
         y = np.array(data['Prediction'])[:-future_days]
         x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
-        #model = RandomForestRegressor(n_estimators=10, max_depth=10)
-        model = DecisionTreeRegressor(max_depth=20, random_state=2)
+        model = RandomForestRegressor(n_estimators=10, max_depth=5, random_state=42)
         x_future = data.drop(columns=['Prediction'], axis=1)[:-future_days]
         x_future = x_future.tail(future_days)
         x_future = np.array(x_future)
@@ -161,7 +145,6 @@ with change:
         valid = data[X.shape[0]:].copy()
         valid['Prediction'] = predictions
         valid.drop(columns=['Prediction'], axis=1)
-        # print(valid.head())
         predict_graph = px.line(valid, x=valid.index, y=['Close', 'Prediction'])
         predict_graph.update_layout(title='Close vs Prediction', xaxis_title='Date', yaxis_title='Price')
         st.plotly_chart(predict_graph)

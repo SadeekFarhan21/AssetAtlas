@@ -1,7 +1,8 @@
-sklearn
+scikit-learn
 openai
 yfinance
 numpy
 pandas
 plotly
 streamlit
+google.generativeai
