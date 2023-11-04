@@ -9,11 +9,14 @@ from dateutil.relativedelta import relativedelta
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.tree import DecisionTreeRegressor
-import openai
+import google.generativeai as palm
+import os
 
-# st.set_page_config(layout="wide")
+st.set_page_config(layout="wide")
 # API Key
-
+#api_key = ""open('api_key.text', "r").open()
+#print(api_key)
+# palm.configure(api_key=os.environ['AIzaSyD0iZyV-oHHpunhhTQNqJAjY5fxBfIkjSQ'])
 
 # Create the container
 title = st.container()
@@ -28,19 +31,16 @@ change = st.container()
 verdict = st.container()
 prediction = st.container()
 
+exchange = pd.read_csv('https://raw.githubusercontent.com/dhhagan/stocks/master/scripts/stock_info.csv')
 
 # nasdaq stocks
-nasdaq = sorted(set(
-['AAPL', 'TWTR', 'MSFT', 'COIN','TSLA', 'AMZN', 'GOOG', 'FB', 'NFLX', 'INTC', 'CSCO', 'CMCSA', 'NVDA', 'AMD', 'ADBE', 'ADP', 'ADSK', 'AKAM', 'ADI','QCOM','AMGN']))
-
+nasdaq = exchange[exchange['Exchange'] == 'NASDAQ'].Ticker
 
 # nyse stocks
-nyse = sorted(set(
-['HD', 'WMT', 'JPM', 'BAC', 'C', 'WFC', 'PFE', 'T', 'MA', 'UNH', 'KO', 'VZ', 'DIS', 'PG', 'MCD', 'MRK', 'PEP', 'MGM', 'BA', 'CAT', 'DD', 'JNJ', 'MMM', 'AXP', 'XOM', 'PNC', 'XOM', 'CME', 'TMO', 'COP', 'CVS',  'ORCL', 'PLTR', 'NKE', 'NOC']))
-
+nyse = exchange[exchange['Exchange'] == 'NYSE'].Ticker
 
 # companies and tickers
-dictionary = {'AAPL': 'Apple', 'MSFT': 'Microsoft', 'TSLA': 'Tesla', 'AMZN': 'Amazon', 'GOOG': 'Google', 'FB': 'Meta', 'HD': 'Home Depot', 'NFLX': 'Netflix', 'TWTR': 'Twitter', 'WMT': 'Walmart', 'JPM': 'JP Morgan', 'BAC': 'Bank of America', 'C': 'Citigroup', 'WFC': 'Wells Fargo', 'PFE': 'Pfizer','T': 'AT&T', 'INTC': 'Intel Corp', 'CSCO': 'Cisco', 'V'  : 'Visa', 'MA' : 'Mastercard', 'UNH': 'UnitedHealth', 'KO' : 'Coca-Cola', 'VZ' : 'Verizon', 'DIS': 'Disney', 'PG' : 'Procter & Gamble', 'MCD': 'McDonalds', 'MRK': 'Merck', 'PEP': 'PepsiCo, Inc.', 'MGM': 'MGM Resorts International', 'BA' : 'Boeing', 'CAT': 'Caterpillar', 'DD' : 'DuPont', 'JNJ': 'Johnson & Johnson', 'MMM': '3M', 'AXP': 'American Express', 'PNC': 'PNC', 'UNP': 'Union Pacific', 'CVS': 'CVS Health Corp', 'CMCSA': 'Comcast', 'COP': 'ConocoPhillips', 'TMO': 'T-Mobile', 'CME': 'Chicago Mercantile Exchange', 'XOM':'Exxon Mobil Corp', 'ORCL': 'Oracle Corp', 'NVDA': 'Nvidia', 'AMD': 'Advanced Micro Devices', 'ADBE': 'Adobe Systems Inc', 'ADP': 'Automatic data Processing', 'PLTR': 'Paylocity', 'AMAT': 'Applied Materials', 'ADSK': 'Autodesk', 'AKAM': 'Akamai Technologies', 'QCOM': 'Qualcomm', 'NKE': 'Nike', 'AMGN': 'Amgen', 'ADI': 'Analog Devices', 'NOC': 'Northrop Grumman' }
+dictionary = dict(zip(exchange.Ticker, exchange.Name))
 
 
 # Title
@@ -65,18 +65,19 @@ df = yf.download(ticker, start=start, end=end)
 df = df[::-1]
 
 with about:
-    st.subheader(dictionary[ticker])
-    text = 'Write a brief explanation of the history and purpose of' + dictionary[ticker] + '.'
+    st.header(dictionary[ticker])
+    #text = 'Write a brief explanation of the history and purpose of' + dictionary[ticker] + '.'
     
-    output = openai.Completion.create(
-        prompt=text, 
-        model='text-davinci-003',
-        max_tokens=1000, 
-    )
-    output = str(output['choices'][0]['text'])
-    st.write(dictionary[ticker])
-    st.write(output)
     
+    #output = openai.Completion.create(
+    #    prompt=text, 
+    #    model='text-davinci-003',
+    #    max_tokens=1000, 
+    #)
+    #output = str(output['choices'][0]['text'])
+    #st.write(dictionary[ticker])
+    #st.write(output)
+    #
      
 # Volume
 with volume:
