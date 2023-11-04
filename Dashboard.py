@@ -14,7 +14,6 @@ import openai
 # st.set_page_config(layout="wide")
 # API Key
 
-openai.api_key = "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"
 
 # Create the container
 title = st.container()
