@@ -57,7 +57,6 @@ df = df[::-1]
 
 with about:
     st.header(dictionary[ticker])
-    st.write(response.result)
      
 # Volume
 with volume:
