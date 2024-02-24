@@ -9,8 +9,6 @@ from sklearn.model_selection import train_test_split;
 from sklearn.ensemble import RandomForestRegressor;
 import google.generativeai as palm
 
-st.set_page_config(layout="wide")
-palm.configure(api_key="AIzaSyBNa8uKXspRDH56UNEwPeIje-jOAW742Ig")
 
 # Create the container
 title = st.container()
@@ -60,8 +58,6 @@ df = df[::-1]
 
 with about:
     st.header(dictionary[ticker])
-    text = "Compose a concise description within approximately 100 words that provides an accurate account of " + dictionary[ticker] +" history, purpose, current status, and future prospects. Bold the year of establishment and the headquarters location. Carefully review punctuation. Enlarge and emphasize the title before submitting it to me."
-    response = palm.generate_text(prompt=text)
     st.write(response.result)
      
 # Volume
