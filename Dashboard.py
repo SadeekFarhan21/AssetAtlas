@@ -9,7 +9,6 @@ from sklearn.model_selection import train_test_split;
 from sklearn.ensemble import RandomForestRegressor;
 import google.generativeai as palm
 
-
 # Create the container
 title = st.container()
 sidebar = st.container()
